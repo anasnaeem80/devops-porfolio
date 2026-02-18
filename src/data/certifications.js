@@ -1,0 +1,51 @@
+export const certificationsData = [
+  {
+    id: 1,
+    name: "CI/CD with Jenkins and Docker",
+    issuer: "Udemy",
+    status: "completed",
+    icon: "jenkins",
+  },
+  {
+    id: 2,
+    name: "AI-Driven Infrastructure as Code (IaC) and Cloud Automation",
+    issuer: "Udemy",
+    status: "completed",
+    icon: "ai",
+  },
+  {
+    id: 3,
+    name: "Mastering Linux: The Complete Guide to Becoming a Linux Pro",
+    issuer: "Udemy",
+    status: "completed",
+    icon: "linux",
+  },
+  {
+    id: 4,
+    name: "AWS Essentials: A Complete Beginner's Guide",
+    issuer: "Udemy",
+    status: "completed",
+    icon: "aws",
+  },
+  {
+    id: 5,
+    name: "Mastering AWS Serverless: Hands-On with Core AWS Services",
+    issuer: "Udemy",
+    status: "completed",
+    icon: "aws-serverless",
+  },
+  {
+    id: 6,
+    name: "DevOps Master Class",
+    issuer: "TrainWithShubham",
+    status: "completed",
+    icon: "devops",
+  },
+  {
+    id: 7,
+    name: "Docker Mastery: with Kubernetes + Swarm",
+    issuer: "Udemy",
+    status: "completed",
+    icon: "docker",
+  },
+];
