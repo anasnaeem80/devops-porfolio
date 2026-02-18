@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import emailjs from "@emailjs/browser";
 import SectionWrapper from "./SectionWrapper";
 import { Mail, Phone, MapPin, Send, Github, Linkedin } from "lucide-react";
 
 const Contact = () => {
+  const form = useRef();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+
+  // Form state
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    from_name: "",
+    from_email: "",
     message: "",
   });
 
@@ -16,13 +22,30 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const sendEmail = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-    // Reset form
-    setFormData({ name: "", email: "", message: "" });
-    alert("Message sent successfully!");
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    emailjs
+      .sendForm(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        form.current,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+      )
+      .then(() => {
+        setSubmitStatus("success");
+        setFormData({ from_name: "", from_email: "", message: "" }); // Reset form
+        setTimeout(() => setSubmitStatus(null), 5000);
+      })
+      .catch((error) => {
+        console.error("EmailJS Error:", error);
+        setSubmitStatus("error");
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
@@ -79,7 +102,7 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* Social Links - Updated with correct URLs */}
+            {/* Social Links */}
             <div className='flex space-x-4'>
               <a
                 href='https://github.com/anasnaeem80'
@@ -108,19 +131,19 @@ const Contact = () => {
 
           {/* Contact Form */}
           <div className='card'>
-            <form onSubmit={handleSubmit} className='space-y-6'>
+            <form ref={form} onSubmit={sendEmail} className='space-y-6'>
               <div>
                 <label
-                  htmlFor='name'
+                  htmlFor='from_name'
                   className='block text-sm font-medium text-gray-700 mb-2'
                 >
                   Name
                 </label>
                 <input
                   type='text'
-                  id='name'
-                  name='name'
-                  value={formData.name}
+                  id='from_name'
+                  name='from_name'
+                  value={formData.from_name}
                   onChange={handleChange}
                   required
                   autoComplete='name'
@@ -131,16 +154,16 @@ const Contact = () => {
 
               <div>
                 <label
-                  htmlFor='email'
+                  htmlFor='from_email'
                   className='block text-sm font-medium text-gray-700 mb-2'
                 >
                   Email
                 </label>
                 <input
                   type='email'
-                  id='email'
-                  name='email'
-                  value={formData.email}
+                  id='from_email'
+                  name='from_email'
+                  value={formData.from_email}
                   onChange={handleChange}
                   required
                   autoComplete='email'
@@ -169,12 +192,27 @@ const Contact = () => {
                 ></textarea>
               </div>
 
+              {/* Status Messages */}
+              {submitStatus === "success" && (
+                <div className='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded'>
+                  ✅ Message sent successfully! I'll get back to you soon.
+                </div>
+              )}
+
+              {submitStatus === "error" && (
+                <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded'>
+                  ❌ Failed to send message. Please try again or email me
+                  directly.
+                </div>
+              )}
+
               <button
                 type='submit'
-                className='w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2'
+                disabled={isSubmitting}
+                className='w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed'
               >
                 <Send className='w-5 h-5' />
-                <span>Send Message</span>
+                <span>{isSubmitting ? "Sending..." : "Send Message"}</span>
               </button>
             </form>
           </div>
